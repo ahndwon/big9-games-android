@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ff6b40</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#ffda3c</color>
+    <color name="orange">#ff6b40</color>
+    <color name="light_purple">#a16cee</color>
+    <color name="purple">#7038c0</color>
+
+    <color name="white">#fff</color>
+    <color name="dark_white">#f2f2f2</color>
+
+    <color name="yellow">#ffda3c</color>
+    <color name="yellow_clicked">#ffb000</color>
+
+    <color name="blue">#5d99ff</color>
+    <color name="light_blue">#43bcf4</color>
+    <color name="topaz">#16cb9b</color>
+    <color name="light_topaz">#ace4d6</color>
+    <color name="peach">#ffe5de</color>
+
+    <color name="reddish_orange">#f65628</color>
+    <color name="salmon">#ff8b6a</color>
+
+    <color name="text_black">#252525</color>
+
+    <color name="text_brown">#893939</color>
+    <color name="text_light_purple">#b793ea</color>
+    <color name="text_light_orange">#ff8b6a</color>
+    <color name="text_blue">#7babfc</color>
+
+    <color name="dark_gray">#8f8f8f</color>
+    <color name="pinkish_gray">#bbbbbb</color>
+    <color name="gray">#868686</color>
+    <color name="light_gray">#e4e4e4</color>
+
+    <color name="chart_blue">#4e90ff</color>
+    <color name="chart_dark_blue">#2360c7</color>
+
+    <color name="barrier_color">#f2f2f2</color>
+
+    <color name="navigationSelected">#252525</color>
+    <color name="navigationUnselected">#bbbbbb</color>
+</resources>

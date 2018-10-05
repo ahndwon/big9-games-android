@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Big9 Games</string>
+
+    <string name="hint_email_ko">이메일 주소</string>
+    <string name="hint_password_ko">비밀번호</string>
+    <string name="hint_id_ko">아이디</string>
+    <string name="button_login_ko">로그인</string>
+    <string name="button_sign_up_ko">회원가입</string>
+    <string name="button_find_password_ko">비밀번호 찾기</string>
+    <string name="title_bluetooth_ko">블루투스</string>
+
+    <string name="text_no_device_ko">발견된 장치가 없습니다.</string>
+    <string name="text_bluetooth_found_ko">블루투스 장치가 확인되었습니다.</string>
+
+
+    <!--Unity-->
+    <string name="ready_exercise">운동을 시작해 봐요</string>
+    <string name="slow_exercise">나를 따라서 연습 3번을 천천히 해봐^^</string>
+    <string name="actual_exercise">정확히 따라하면 많은 별을\n획득할 수 있어!! 날 따라해봐~</string>
+    <string name="start_exercise">운동 시작 버튼이 나타나면\n버튼을 눌러주세요</string>
+    <string name="walking_on_spot">제자리 걸음을 %d초 동안 걸어봐요</string>
+
+</resources>
