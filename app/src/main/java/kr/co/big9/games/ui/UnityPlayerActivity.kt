@@ -7,8 +7,6 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.PixelFormat
-import android.media.AudioAttributes
-import android.media.SoundPool
 import android.os.Build
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -17,22 +15,19 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.WindowManager
 import android.widget.FrameLayout
 import com.unity3d.player.UnityPlayer
-import kotlinx.android.synthetic.main.activity_unity.*
 import kr.co.big9.games.R
 import kr.co.big9.games.bluetooth.BLEManager
 import kr.co.big9.games.listener.BLEManagerListener
 import kr.co.big9.games.listener.OnGameFinishListener
 import kr.co.big9.games.listener.OnInitializeListener
+import kr.co.big9.games.listener.OnMotionListener
 import kr.co.big9.games.model.GameManager
 import kr.co.big9.games.utils.BT_FAILURE
 import kr.co.big9.games.utils.GameCountHelper
 import kr.co.big9.games.utils.GameCounter
-import kr.co.big9.games.utils.TYPE_MEASURE
-
 import java.util.*
 
 
@@ -47,7 +42,6 @@ class UnityPlayerActivity : AppCompatActivity() {
         private var exerciseTime: Long = 0
         var animationCount: Int = 0
 
-//        lateinit var exerciseModel: Exercise  // 반드시 static 이여야 함
         lateinit var gameManager: GameManager // 반드시 static 이여야 함
     }
 
@@ -58,18 +52,10 @@ class UnityPlayerActivity : AppCompatActivity() {
     private var stage: Int = 0
     private var time: Int = 0
 
-    private lateinit var exerciseModelType: String
-    private lateinit var measureType: String
-    private lateinit var gender: String
-
     lateinit var gameCountHelper: GameCountHelper
 
     private var buf = StringBuilder()
     private val bleManager = BLEManager()
-
-    private var soundIdSuccess: Int = 0
-    private var soundIdFail: Int = 0
-    lateinit var soundPool: SoundPool
 
     private var deviceAddress: String? = null
     private var receiveDataTimer: Timer? = null
@@ -87,8 +73,14 @@ class UnityPlayerActivity : AppCompatActivity() {
             }
         }
         //        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         checkBluetoothPermission()
+
+
+        initUnitySettings()
+        frameLayout.addView(mUnityPlayer.view)
+
+        mUnityPlayer.requestFocus()
+
 
         bleManager.listener = object : BLEManagerListener {
             override fun onFindDevice(device: BluetoothDevice) {}
@@ -102,13 +94,6 @@ class UnityPlayerActivity : AppCompatActivity() {
             override fun onServiceReady() {
                 Log.i(TAG, "onServiceReady")
                 startActionSensor()
-                val buttonTask = object : TimerTask() {
-                    override fun run() {
-                        runOnUiThread { startExerciseButton.visibility = View.VISIBLE }
-                    }
-                }
-                val buttonTimer = Timer()
-                buttonTimer.schedule(buttonTask, 3000)
             }
 
             override fun onDisconnected() {
@@ -131,10 +116,7 @@ class UnityPlayerActivity : AppCompatActivity() {
             }
         }
 
-        initUnitySettings()
-        frameLayout.addView(mUnityPlayer.view)
 
-        mUnityPlayer.requestFocus()
 
     }
 
@@ -143,12 +125,11 @@ class UnityPlayerActivity : AppCompatActivity() {
                 .getString("DEVICE_ADDRESS", null)
         Log.d(TAG, "connecting address:$deviceAddress")
 
-//        if (deviceAddress == null) {
-//            setResult(BT_FAILURE)
-//            UnityPlayer.UnitySendMessage("Player", "CloseApp", "")
-//            finish()
-//        }
-
+        if (deviceAddress == null) {
+            setResult(BT_FAILURE)
+            UnityPlayer.UnitySendMessage("Player", "CloseApp", "")
+            finish()
+        }
 
         deviceAddress?.let {
             bleManager.connect(it)
@@ -173,112 +154,64 @@ class UnityPlayerActivity : AppCompatActivity() {
     private fun initUnitySettings() {
         mUnityPlayer = UnityPlayer(this)
 
-//        UnityPlayer.UnitySendMessage("Player", "ReloadApp", "")
-
-
-        // 음악
-        val attributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-
-        soundPool = SoundPool.Builder()
-                .setAudioAttributes(attributes)
-                .build()
-
-        stage = intent.getIntExtra("STAGE", 0)
-        time = intent.getIntExtra("TIME", 8000)
-
-        Log.d(TAG, "stage: $stage")
-
-        animationCount = 0
-
         window.setFormat(PixelFormat.RGBX_8888)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-//
-//        UnityPlayer.UnitySendMessage("Player", "SetAnimationSpeed", "1")
-//        gender = if (intent.getStringExtra("GENDER") == "male") "Man" else "Woman"
-//
-//        if (Random().nextInt(100) <= 5)
-//            gender = "Gom"
-//
-//        UnityPlayer.UnitySendMessage("Player", "SetSex", gender)
-//
-//        val temp = intent.getIntExtra("CHILD_AGE", 100)
-//        var age = temp.toString()
-//        age = when {
-//            Integer.valueOf(age) < 5 -> "5세"
-//            Integer.valueOf(age) > 9 -> "9세"
-//            else -> age + "세"
-//        }
 
-        gameManager = GameManager(time, resources)
         gameCountHelper = GameCountHelper()
-        gameManager.exerciseCountHelper = gameCountHelper
-        gameManager.finishListener = object : OnGameFinishListener {
-            override fun finishExercise(star: Int, score: Int, maxCount: Int) {
-                showResultWindow(star, score, maxCount)
+        gameManager = GameManager().apply {
+            this.gameCounter = GameCounter().apply {
+                this.countHelper = gameCountHelper
+                this.onMotionListener = (object : OnMotionListener {
+                    override fun onRight() {
+                        Log.d(GameManager.TAG, "RIGHT")
+                        UnityPlayer.UnitySendMessage("BLEBridge", "OnReceiveMotion", "RIGHT")
+                    }
+
+                    override fun onLeft() {
+                        Log.d(GameManager.TAG, "LEFT")
+                        UnityPlayer.UnitySendMessage("BLEBridge", "OnReceiveMotion", "LEFT")
+                    }
+                })}
+
+            this.finishListener = object : OnGameFinishListener {
+                override fun finishExercise(star: Int, score: Int, maxCount: Int) {
+                    endData()
+                    finish()
+                }
+            }
+        }
+
+
+    }
+
+    private fun checkBluetoothPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            initBluetooth()
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+                requestPermissions(permission,
+                        PERMISSION_ACCESS_FINE_LOCATION)
             }
         }
     }
 
-    fun showResultWindow(star: Int, score: Int, maxCount: Int) {
-        var starCount = star
-        if (stopExerciseButton.visibility == View.VISIBLE) {
-            stopExerciseButton.post { stopExerciseButton.visibility = View.GONE }
+    private fun initBluetooth() {
+        if (!bleManager.initialize(this)) {
+            Log.e("BLUETOOTH", "Bluetooth manager initialize failed")
+            finish()
         }
-
-        if (endExerciseButton.visibility == View.GONE) {
-            endExerciseButton.post { endExerciseButton.visibility = View.VISIBLE }
-        }
-
-//        UnityPlayer.UnitySendMessage("Player", "CloseText", "")
-//
-//        when (exerciseModelType) {
-//            TYPE_MEASURE -> {
-//                Log.d(TAG, "exerciseModelType == MEASURE_MODEL")
-//                UnityPlayer.UnitySendMessage("Player", "SetGoodScore", 100.toString())
-//                UnityPlayer.UnitySendMessage("Player", "SetBadScore", 0.toString())
-//
-//                UnityPlayer.UnitySendMessage("Player", "SetSuccessText", maxCount.toString())
-//                UnityPlayer.UnitySendMessage("Player", "SetFailedText", 0.toString())
-//            }
-//            else -> {
-//                Log.d(TAG, "else ")
-//                val goodScore = score / (maxCount * 1f) * 100
-//
-//                UnityPlayer.UnitySendMessage("Player", "SetGoodScore", Math.round(goodScore).toString())
-//                UnityPlayer.UnitySendMessage("Player", "SetBadScore", (100 - Math.round(goodScore)).toString())
-//
-//                UnityPlayer.UnitySendMessage("Player", "SetSuccessText", score.toString())
-//                UnityPlayer.UnitySendMessage("Player", "SetFailedText", (maxCount - score).toString())
-//            }
-//        }
-
-        val sound = if (starCount >= 2) {
-            soundIdSuccess
-        } else soundIdFail
-        soundPool.play(sound, 1f, 1f, 0, 0, 1f)
-
-//        UnityPlayer.UnitySendMessage("Player", "OpenResultView", "")
-//        UnityPlayer.UnitySendMessage("Player", "SetScore", (starCount * 33).toString())
-
-        if (gender == "Gom")
-            starCount *= 2
-
-        exerciseTime = System.currentTimeMillis() - exerciseTime
-
-        val intent = Intent()
-        intent.putExtra("STAR", starCount)
-        intent.putExtra("STAGE", stage)
-        intent.putExtra("SCORE", score)
-        intent.putExtra("EXERCISE_MODEL_TYPE", exerciseModelType)
-        intent.putExtra("MEASURE_TYPE", measureType)
-        intent.putExtra("TIME", exerciseTime)
-
-        setResult(RESULT_OK, intent)
     }
+
+    private fun endData() {
+        if (receiveDataTimer != null) {
+            receiveDataTimer?.cancel()
+            receiveDataTimer = null
+        }
+    }
+
 
     override fun onNewIntent(intent: Intent) {
         // To support deep linking, we need to make sure that the client can get access to
@@ -367,10 +300,6 @@ class UnityPlayerActivity : AppCompatActivity() {
         return mUnityPlayer.injectEvent(event)
     }
 
-//    override fun onBackPressed() {
-//
-//    }
-
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return mUnityPlayer.injectEvent(event)
     }
@@ -380,38 +309,8 @@ class UnityPlayerActivity : AppCompatActivity() {
         return mUnityPlayer.injectEvent(event)
     }
 
-    private fun checkBluetoothPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            initBluetooth()
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val permission = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-                requestPermissions(permission,
-                        PERMISSION_ACCESS_FINE_LOCATION)
-            }
-        }
-    }
-
-    private fun initBluetooth() {
-        if (!bleManager.initialize(this)) {
-            Log.e("BLUETOOTH", "Bluetooth manager initialize failed")
-            finish()
-        }
-    }
-
-    private fun endData() {
-        if (receiveDataTimer != null) {
-            receiveDataTimer?.cancel()
-            receiveDataTimer = null
-        }
-    }
-
     fun checkAnimationEnd() {
         Log.d(TAG, "checkAnimationEnd()")
-        Log.d(TAG, "animationCount : $animationCount")
-        animationCount++
-        gameManager.animationEnd()
     }
 
     fun closeApp() {

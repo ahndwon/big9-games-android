@@ -30,21 +30,8 @@ class GameCountHelper : OnProtocolListener {
         private set
 
     var isPostureChanged = false
-
-    var isSitDown = false
         private set
 
-    var isStandUp = true
-        private set
-
-    var isLegDown: Boolean = false
-        private set
-    var isLegUp: Boolean = false
-        private set
-    var isRotateRight: Boolean = false
-        private set
-    var isRotateLeft: Boolean = false
-        private set
     var isTiltFront: Boolean = false
         private set
     var isTiltBack: Boolean = false
@@ -106,8 +93,6 @@ class GameCountHelper : OnProtocolListener {
     }
 
     override fun onUpper(isLeftUp: Int, isRightUp: Int) {
-//        Log.i(BluetoothActivity.TAG, "isLeftUp: $isLeftUp isRightUp: $isRightUp")
-
         isLeftArmUp = if (isLeftUp > 0) {
             Log.d(TAG, "왼쪽 위!")
             true
@@ -152,10 +137,8 @@ class GameCountHelper : OnProtocolListener {
         // 4 - coinFlag, charging(4.2 - 100%)
         val token = packet.trim().split(",")
 //        Log.i("WTF", packet)
-
         try {
             //            protocolText.append(packet)
-
             if (token.size == 3) {
                 when (token[0]) {
                     "0" -> onVoltage(java.lang.Double.parseDouble(token[1]), Integer.parseInt(token[2]))
@@ -170,7 +153,6 @@ class GameCountHelper : OnProtocolListener {
         }
     }
 
-
     fun resetTilt() {
         isTiltBack = false
         isTiltFront = false
@@ -178,29 +160,7 @@ class GameCountHelper : OnProtocolListener {
         isTiltRight = false
     }
 
-    fun initArmFlag() {
-        isLeftArmStretch = false
-        isLeftArmUp = false
-        isRightArmStretch = false
-        isRightArmUp = false
-//        isRightArmUpFold = true
-//        isRightArmUpStretch = false
-//        isRightArmDownFold = true
-//        isRightArmDownStretch = false
-//
-//        isLeftArmUpFold = true
-//        isLeftArmUpStretch = false
-//        isLeftArmDownFold = true
-//        isLeftArmDownStretch = false
+    fun onPostureCheck() {
+        isPostureChanged = false
     }
-
-    fun initLegFlag() {
-        isLegDown = false
-        isLegUp = false
-        isRotateLeft = false
-        isRotateRight = false
-        isTiltLeft = false
-        isTiltRight = false
-    }
-
 }

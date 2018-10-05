@@ -1,37 +1,31 @@
 package kr.co.big9.games.utils
 
+import android.util.Log
 import kr.co.big9.games.listener.OnMotionListener
 
 
 class GameCounter {
+
+    companion object {
+        val TAG: String = GameCounter::class.java.name
+    }
     internal lateinit var countHelper: GameCountHelper
     internal lateinit var onMotionListener: OnMotionListener
-    internal var canCounting = true
-    internal var startTime: Long = 0
-    internal var exerciseLimitTime: Float = 100000f
-
-
-
 
     fun counting() {
         with(countHelper) {
-            var leftMotion = isLeftArmStretch
-            var rightMotion = isRightArmStretch
+            val leftMotion = isLeftArmStretch
+            val rightMotion = isRightArmStretch
 
             if(leftMotion) {
+                Log.d(TAG,"leftMotion")
                 onMotionListener.onLeft()
-                leftMotion = false
             }
 
             if (rightMotion) {
+                Log.d(TAG,"rightMotion")
                 onMotionListener.onRight()
-                rightMotion = false
             }
         }
-    }
-
-
-    fun onPostureCheck() {
-        countHelper.isPostureChanged = false
     }
 }

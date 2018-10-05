@@ -36,10 +36,6 @@ class DeviceListAdapter : RecyclerView.Adapter<DeviceViewHolder>() {
             }
             deviceStateTextView.text = stateText
             setOnClickListener {
-//                PreferenceManager.getDefaultSharedPreferences(this.context)
-//                        .edit()
-//                        .putString(address, null)
-//                        .apply()
                 onClick?.invoke(this)
                 selectedDevicePosition = position
                 notifyDataSetChanged()

@@ -22,8 +22,6 @@ class BLEManager {
         const val UART_PROFILE_DISCONNECTED = 21
     }
 
-
-
     val TAG: String = BLEManager::class.java.name
 
     lateinit var bluetoothService: BluetoothService
@@ -201,7 +199,6 @@ class BLEManager {
                 Log.i("bondState", result.device?.bondState.toString())
                 Log.i("type", result.device?.type.toString())
                 Log.i("name", result.device?.name.toString())
-
             }
         }
     }
@@ -210,7 +207,6 @@ class BLEManager {
     fun scan() {
         Log.i(TAG, "scan()")
 //        check(isInitialized)
-
         disconnect()
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()

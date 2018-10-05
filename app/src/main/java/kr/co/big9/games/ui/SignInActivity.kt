@@ -13,5 +13,6 @@ class SignInActivity : AppCompatActivity() {
         setContentView(R.layout.activity_sign_in)
 
         signInButton.setOnClickListener { startActivity<ListActivity>() }
+
     }
 }
