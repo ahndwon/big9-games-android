@@ -66,7 +66,7 @@ class BluetoothDialogFragment : DialogFragment() {
                         view.findProgressBar.visibility = View.GONE
                         if (!deviceList.contains(device.address)) {
                             deviceList[device.address] = device
-                            view.deviceRecyclerView.adapter.notifyDataSetChanged()
+                            view.deviceRecyclerView.adapter?.notifyDataSetChanged()
                         }
                     }
                 }

@@ -15,17 +15,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.SignInActivity">
+        <activity android:name=".ui.SignInActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.ListActivity" />
+
+        <activity android:name=".ui.ListActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".ui.UnityPlayerActivity"
             android:launchMode="singleTask"
-            android:process=":unityplayer" />
+            android:process=":unityplayer"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".bluetooth.BluetoothService"

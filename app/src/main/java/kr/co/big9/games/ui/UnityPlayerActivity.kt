@@ -97,6 +97,7 @@ class UnityPlayerActivity : AppCompatActivity() {
             }
 
             override fun onDisconnected() {
+                Log.i(TAG, "onDisconnected")
                 UnityPlayer.UnitySendMessage("Player", "CloseApp", "")
                 setResult(BT_FAILURE)
                 finish()
@@ -156,7 +157,7 @@ class UnityPlayerActivity : AppCompatActivity() {
 
         window.setFormat(PixelFormat.RGBX_8888)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         gameCountHelper = GameCountHelper()
         gameManager = GameManager().apply {

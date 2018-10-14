@@ -21,6 +21,9 @@ import kr.co.big9.games.bluetooth.BLEManager
 import kr.co.big9.games.listener.BLEManagerListener
 import kr.co.big9.games.model.Stage
 import kr.co.big9.games.ui.adapter.StageListAdapter
+import kr.co.big9.games.utils.BT_FAILURE
+import kr.co.big9.games.utils.PLAY_MODE_REQUEST_CODE
+import kr.co.big9.games.utils.TYPE_BASIC
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.startActivity
@@ -159,4 +162,32 @@ class ListActivity : AppCompatActivity() {
 
         }.show(supportFragmentManager, "BluetoothDialog")
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d(TAG, "requestCode : $requestCode")
+        if (requestCode == PLAY_MODE_REQUEST_CODE) {
+            if (resultCode == BT_FAILURE) {
+                this.showBluetoothDialogFragment()
+                snackbar(listActivityLayout, "블루투스 연결을 확인해주세요")
+            }
+
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "RESULT_OK")
+            }
+        }
+
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "REQUEST_ENABLE_BT")
+
+                bleManager.scan()
+            }
+        }
+
+//        if (requestCode == NO_PERMISSION) {
+//            snackbar(exerciseSelectLayout, "권한에 동의가 필요합니다.")
+//        }
+    }
+
 }
