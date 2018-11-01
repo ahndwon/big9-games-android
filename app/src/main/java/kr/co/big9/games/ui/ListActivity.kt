@@ -21,9 +21,7 @@ import kr.co.big9.games.bluetooth.BLEManager
 import kr.co.big9.games.listener.BLEManagerListener
 import kr.co.big9.games.model.Stage
 import kr.co.big9.games.ui.adapter.StageListAdapter
-import kr.co.big9.games.utils.BT_FAILURE
-import kr.co.big9.games.utils.PLAY_MODE_REQUEST_CODE
-import kr.co.big9.games.utils.TYPE_BASIC
+import kr.co.big9.games.utils.*
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.startActivity
@@ -48,16 +46,18 @@ class ListActivity : AppCompatActivity() {
         }
 
         val list = ArrayList<Stage>().apply {
-            for (i in 0..5)
-                this.add(Stage("$i", i, 10000))
+            this.add(Stage("똥피하기", 1, POO_SCENE,10000))
+            this.add(Stage("길건너기", 2, CRT_SCENE,10000))
+//            for (i in 0..1)
+//                this.add(Stage("$i", i, 10000))
         }
 
 
         val stageListAdapter = StageListAdapter(list)
-        stageListAdapter.onClick = { v ->
-            Log.d(TAG, "onClick")
-            startActivity<UnityPlayerActivity>()
-        }
+//        stageListAdapter.onClick = { v ->
+//            Log.d(TAG, "onClick")
+//            startActivity<UnityPlayerActivity>()
+//        }
         stageRecyclerView.adapter = stageListAdapter
         stageRecyclerView.layoutManager = LinearLayoutManager(this)
 

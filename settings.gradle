@@ -1,1 +1,1 @@
-include ':app', ':unity-classes'
+include ':app'

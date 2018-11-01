@@ -25,9 +25,7 @@ import kr.co.big9.games.listener.OnGameFinishListener
 import kr.co.big9.games.listener.OnInitializeListener
 import kr.co.big9.games.listener.OnMotionListener
 import kr.co.big9.games.model.GameManager
-import kr.co.big9.games.utils.BT_FAILURE
-import kr.co.big9.games.utils.GameCountHelper
-import kr.co.big9.games.utils.GameCounter
+import kr.co.big9.games.utils.*
 import java.util.*
 
 
@@ -53,6 +51,7 @@ class UnityPlayerActivity : AppCompatActivity() {
     private var time: Int = 0
 
     lateinit var gameCountHelper: GameCountHelper
+    private var gameScene = POO_SCENE
 
     private var buf = StringBuilder()
     private val bleManager = BLEManager()
@@ -94,6 +93,7 @@ class UnityPlayerActivity : AppCompatActivity() {
             override fun onServiceReady() {
                 Log.i(TAG, "onServiceReady")
                 startActionSensor()
+                UnityPlayer.UnitySendMessage("Starter", "StartApp", gameScene)
             }
 
             override fun onDisconnected() {
@@ -154,6 +154,8 @@ class UnityPlayerActivity : AppCompatActivity() {
 
     private fun initUnitySettings() {
         mUnityPlayer = UnityPlayer(this)
+
+        gameScene = intent?.getStringExtra(SCENE) ?: POO_SCENE
 
         window.setFormat(PixelFormat.RGBX_8888)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -226,9 +228,9 @@ class UnityPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         endData()
-//        bleManager.disconnect()
-//        bleManager.destroy(this)
-//        mUnityPlayer.quit()
+        bleManager.disconnect()
+        bleManager.destroy(this)
+        mUnityPlayer.quit()
         super.onDestroy()
     }
 
@@ -295,7 +297,8 @@ class UnityPlayerActivity : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.d(TAG, "KEYCODE_BACK")
-            UnityPlayer.UnitySendMessage("Player", "CloseApp", "")
+            UnityPlayer.UnitySendMessage("BLEBridge",  "OnBackButtonPressed",  "back")
+//            UnityPlayer.UnitySendMessage("Player", "CloseApp", "")
             onBackPressed()
         }
         return mUnityPlayer.injectEvent(event)

@@ -41,6 +41,10 @@ const val BT_FAILURE = 555
 val PASSWORD_LENGTH_RANGE = 6 .. 16
 val ID_LENGTH_RANGE = 4 .. 20
 
+const val SCENE = "Scene"
+const val POO_SCENE = "PooScene"
+const val CRT_SCENE = "CRTScene"
+
 
 
 

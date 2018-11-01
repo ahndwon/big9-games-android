@@ -44,8 +44,8 @@ class BluetoothDialogFragment : DialogFragment() {
                 inflater.inflate(R.layout.fragment_bluetooth_dialog, container, false)
 
         if (dialog != null && dialog.window != null) {
-            dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            dialog.window.requestFeature(Window.FEATURE_NO_TITLE)
+            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
         }
 
         view.findProgressBar.visibility = View.VISIBLE

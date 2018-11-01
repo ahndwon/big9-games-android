@@ -1,14 +1,17 @@
 package kr.co.big9.games.ui.adapter
 
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.item_stage.view.*
 import kr.co.big9.games.model.Stage
+import kr.co.big9.games.ui.UnityPlayerActivity
 import kr.co.big9.games.ui.viewholder.StageViewHolder
+import kr.co.big9.games.utils.SCENE
 
 
-class StageListAdapter(val stages: List<Stage>)
+class StageListAdapter(private val stages: List<Stage>)
     : RecyclerView.Adapter<StageViewHolder>() {
     var onClick: ((View)->Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StageViewHolder =
@@ -22,8 +25,15 @@ class StageListAdapter(val stages: List<Stage>)
         with(holder.itemView) {
             stageTextView.text = stage.stageName
 //            ratingBar.rating = score.toFloat()
-            onClick?.let {
-                setOnClickListener(onClick)
+//            onClick?.let {
+//                setOnClickListener(onClick)
+
+//            }
+
+            this.setOnClickListener {
+                val intent = Intent(this.context, UnityPlayerActivity::class.java)
+                intent.putExtra(SCENE, stage.stageScene)
+                this.context.startActivity(intent)
             }
         }
     }
