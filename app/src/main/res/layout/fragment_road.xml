@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="길 건니기"
+                android:text="길 건너기"
                 android:textColor="#474747"
                 android:textSize="18sp"
                 android:textStyle="bold"
