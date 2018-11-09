@@ -13,11 +13,21 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
         android:layout_marginStart="30dp"
-        app:layout_constraintVertical_bias="1"
-        app:layout_constraintBottom_toBottomOf="@id/horizontalGuideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <ImageView
+            android:id="@+id/iconView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
         <EditText
             android:id="@+id/emailEditTextView"
@@ -29,10 +39,11 @@
             android:paddingEnd="20dp"
             android:textSize="16sp"
             android:inputType="textEmailAddress"
+            app:layout_constraintVertical_bias="0.4"
             app:layout_constraintBottom_toTopOf="@id/passwordEditTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iconView"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <EditText
@@ -85,7 +96,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/horizontalGuideline"
+        app:layout_constraintTop_toBottomOf="@id/loginLayout"
         app:layout_constraintVertical_bias="1.0">
 
         <android.support.constraint.ConstraintLayout

@@ -1,5 +1,6 @@
 package kr.co.big9.games.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.bluetooth.BluetoothAdapter
@@ -7,24 +8,25 @@ import android.bluetooth.BluetoothDevice
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.support.constraint.ConstraintLayout
+import android.support.design.widget.TabLayout
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import kotlinx.android.synthetic.main.activity_list.*
+import android.view.*
+import android.widget.TextView
+import kotlinx.android.synthetic.main.activity_list_tab.*
 import kotlinx.android.synthetic.main.fragment_bluetooth_dialog.view.*
 import kotlinx.android.synthetic.main.item_device.view.*
 import kr.co.big9.games.R
 import kr.co.big9.games.bluetooth.BLEManager
 import kr.co.big9.games.listener.BLEManagerListener
-import kr.co.big9.games.model.Stage
-import kr.co.big9.games.ui.adapter.StageListAdapter
+import kr.co.big9.games.ui.adapter.PagerAdapter
+import kr.co.big9.games.ui.fragment.BombFragment
+import kr.co.big9.games.ui.fragment.RoadFragment
 import kr.co.big9.games.utils.*
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.indeterminateProgressDialog
-import org.jetbrains.anko.startActivity
 
 class ListActivity : AppCompatActivity() {
     companion object {
@@ -39,27 +41,63 @@ class ListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_list_tab)
         setSupportActionBar(toolbar)
         supportActionBar?.let {
             title = ""
         }
 
-        val list = ArrayList<Stage>().apply {
-            this.add(Stage("똥피하기", 1, POO_SCENE,10000))
-            this.add(Stage("길건너기", 2, CRT_SCENE,10000))
-//            for (i in 0..1)
-//                this.add(Stage("$i", i, 10000))
-        }
+//        val fragment = BombFragment()
+//
+//        supportFragmentManager.beginTransaction().replace(R.id.container, fragment)
+//                .commit()
 
+        setupCustomTabs()
 
-        val stageListAdapter = StageListAdapter(list)
-//        stageListAdapter.onClick = { v ->
-//            Log.d(TAG, "onClick")
-//            startActivity<UnityPlayerActivity>()
-//        }
-        stageRecyclerView.adapter = stageListAdapter
-        stageRecyclerView.layoutManager = LinearLayoutManager(this)
+        val fragmentAdapter = PagerAdapter(supportFragmentManager)
+        fragmentAdapter.addFragment(BombFragment(), BombFragment::class.java.name)
+        fragmentAdapter.addFragment(RoadFragment(), RoadFragment::class.java.name)
+        gameViewPager.adapter = fragmentAdapter
+
+        gameViewPager
+                .addOnPageChangeListener(TabLayout
+                        .TabLayoutOnPageChangeListener(gameTabs))
+
+        setSelectedTab()
+
+        gameTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                    when (tab.position) {
+                        0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
+                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                        R.color.dark_gray))
+                        1 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
+                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                        R.color.dark_gray))
+                        else -> {
+                        }
+                    }
+            }
+
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                gameViewPager.setCurrentItem(tab.position, true)
+                    when (tab.position) {
+                        0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
+                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                R.color.text_black))
+                        1 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
+                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                R.color.text_black))
+                        else -> {
+                        }
+                    }
+            }
+
+        })
 
         setBluetoothProgressDialog()
 
@@ -96,6 +134,38 @@ class ListActivity : AppCompatActivity() {
         }
 
     }
+
+    private fun setSelectedTab() {
+        gameTabs.getTabAt(0)?.customView?.findViewById<TextView>(R.id.bombTabTextView)
+                ?.setTextColor(ContextCompat.getColor(this, R.color.text_black))
+
+        gameTabs.getTabAt(1)?.customView?.findViewById<TextView>(R.id.roadTabTextView)
+                ?.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
+    }
+
+    @SuppressLint("InflateParams")
+    private fun setupCustomTabs() {
+
+        val bombTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_bomb, null).apply {
+                    layoutParams = (ConstraintLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT))
+                    setPadding(0, 0, 0, 0)
+                }
+
+        val roadTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_road, null).apply {
+                    layoutParams = (ConstraintLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT))
+                    setPadding(0, 0, 0, 0)
+                }
+
+        gameTabs.addTab(gameTabs.newTab().setCustomView(bombTab))
+        gameTabs.addTab(gameTabs.newTab().setCustomView(roadTab))
+    }
+//
 
     private fun dismissDialog() {
         if (isShowing) {

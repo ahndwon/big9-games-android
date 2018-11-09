@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/listActivityLayout"
+    android:background="@color/orange"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.ListActivity">
@@ -33,7 +34,9 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
+
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/orange"
