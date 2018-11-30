@@ -23,7 +23,9 @@ import kr.co.big9.games.bluetooth.BLEManager
 import kr.co.big9.games.listener.BLEManagerListener
 import kr.co.big9.games.ui.adapter.PagerAdapter
 import kr.co.big9.games.ui.fragment.BombFragment
+import kr.co.big9.games.ui.fragment.BreakBrickFragment
 import kr.co.big9.games.ui.fragment.RoadFragment
+import kr.co.big9.games.ui.fragment.SpaceFragment
 import kr.co.big9.games.utils.*
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.indeterminateProgressDialog
@@ -37,6 +39,10 @@ class ListActivity : AppCompatActivity() {
     private val bleManager = BLEManager()
     var isShowing = false
     lateinit var bluetoothDialog: ProgressDialog
+
+    private val gameFragments = listOf(BombFragment(),
+            BreakBrickFragment(),
+            RoadFragment())
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +61,8 @@ class ListActivity : AppCompatActivity() {
         setupCustomTabs()
 
         val fragmentAdapter = PagerAdapter(supportFragmentManager)
-        fragmentAdapter.addFragment(BombFragment(), BombFragment::class.java.name)
-        fragmentAdapter.addFragment(RoadFragment(), RoadFragment::class.java.name)
+
+        addFragments(fragmentAdapter)
         gameViewPager.adapter = fragmentAdapter
 
         gameViewPager
@@ -71,30 +77,36 @@ class ListActivity : AppCompatActivity() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-                    when (tab.position) {
-                        0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
-                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
-                                        R.color.dark_gray))
-                        1 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
-                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
-                                        R.color.dark_gray))
-                        else -> {
-                        }
+                when (tab.position) {
+                    0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.dark_gray))
+                    1 -> tab.customView?.findViewById<TextView>(R.id.normalTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.dark_gray))
+                    2 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.dark_gray))
+                    else -> {
                     }
+                }
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 gameViewPager.setCurrentItem(tab.position, true)
-                    when (tab.position) {
-                        0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
-                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
-                                R.color.text_black))
-                        1 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
-                                ?.setTextColor(ContextCompat.getColor(this@ListActivity,
-                                R.color.text_black))
-                        else -> {
-                        }
+                when (tab.position) {
+                    0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.text_black))
+                    1 -> tab.customView?.findViewById<TextView>(R.id.normalTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.text_black))
+                    2 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.text_black))
+                    else -> {
                     }
+                }
             }
 
         })
@@ -135,37 +147,58 @@ class ListActivity : AppCompatActivity() {
 
     }
 
+    private fun addFragments(fragmentAdapter: PagerAdapter) {
+        for (fragment in gameFragments) {
+            fragmentAdapter.addFragment(fragment, fragment::class.java.name)
+        }
+    }
+
     private fun setSelectedTab() {
         gameTabs.getTabAt(0)?.customView?.findViewById<TextView>(R.id.bombTabTextView)
                 ?.setTextColor(ContextCompat.getColor(this, R.color.text_black))
 
-        gameTabs.getTabAt(1)?.customView?.findViewById<TextView>(R.id.roadTabTextView)
+        gameTabs.getTabAt(1)?.customView?.findViewById<TextView>(R.id.normalTabTextView)
+                ?.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
+
+        gameTabs.getTabAt(2)?.customView?.findViewById<TextView>(R.id.normalTabTextView)
+                ?.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
+
+        gameTabs.getTabAt(3)?.customView?.findViewById<TextView>(R.id.roadTabTextView)
                 ?.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
     }
 
     @SuppressLint("InflateParams")
     private fun setupCustomTabs() {
 
-        val bombTab = LayoutInflater.from(this)
-                .inflate(R.layout.tab_bomb, null).apply {
+        val firstTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_first, null).apply {
                     layoutParams = (ConstraintLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT))
                     setPadding(0, 0, 0, 0)
                 }
 
-        val roadTab = LayoutInflater.from(this)
-                .inflate(R.layout.tab_road, null).apply {
+        val lastTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_last, null).apply {
                     layoutParams = (ConstraintLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT))
                     setPadding(0, 0, 0, 0)
                 }
 
-        gameTabs.addTab(gameTabs.newTab().setCustomView(bombTab))
-        gameTabs.addTab(gameTabs.newTab().setCustomView(roadTab))
+        val normalTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_normal, null).apply {
+                    layoutParams = (ConstraintLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT))
+                }
+
+        gameTabs.addTab(gameTabs.newTab().setCustomView(firstTab))
+        for (i in 0.until(gameFragments.size - 2)) {
+            gameTabs.addTab(gameTabs.newTab().setCustomView(normalTab))
+        }
+        gameTabs.addTab(gameTabs.newTab().setCustomView(lastTab))
     }
-//
 
     private fun dismissDialog() {
         if (isShowing) {

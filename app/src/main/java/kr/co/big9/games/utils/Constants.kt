@@ -44,6 +44,8 @@ val ID_LENGTH_RANGE = 4 .. 20
 const val SCENE = "Scene"
 const val POO_SCENE = "PooScene"
 const val CRT_SCENE = "CRTScene"
+const val ACADE_SCENE = "AcadeScene"
+const val BRICK_SCENE = "BreakBrickScene"
 
 
 
