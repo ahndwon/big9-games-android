@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="우주전쟁"
+                android:text="갤럭시 워즈"
                 android:textColor="#474747"
                 android:textSize="18sp"
                 android:textStyle="bold"

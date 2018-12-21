@@ -24,8 +24,8 @@ import kr.co.big9.games.listener.BLEManagerListener
 import kr.co.big9.games.ui.adapter.PagerAdapter
 import kr.co.big9.games.ui.fragment.BombFragment
 import kr.co.big9.games.ui.fragment.BreakBrickFragment
+import kr.co.big9.games.ui.fragment.GalaxyWarsFragment
 import kr.co.big9.games.ui.fragment.RoadFragment
-import kr.co.big9.games.ui.fragment.SpaceFragment
 import kr.co.big9.games.utils.*
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.indeterminateProgressDialog
@@ -42,6 +42,7 @@ class ListActivity : AppCompatActivity() {
 
     private val gameFragments = listOf(BombFragment(),
             BreakBrickFragment(),
+            GalaxyWarsFragment(),
             RoadFragment())
 
 
@@ -81,10 +82,13 @@ class ListActivity : AppCompatActivity() {
                     0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
                             ?.setTextColor(ContextCompat.getColor(this@ListActivity,
                                     R.color.dark_gray))
-                    1 -> tab.customView?.findViewById<TextView>(R.id.normalTabTextView)
+                    1 -> tab.customView?.findViewById<TextView>(R.id.brickTabTextView)
                             ?.setTextColor(ContextCompat.getColor(this@ListActivity,
                                     R.color.dark_gray))
-                    2 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
+                    2 -> tab.customView?.findViewById<TextView>(R.id.galaxyTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.dark_gray))
+                    3 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
                             ?.setTextColor(ContextCompat.getColor(this@ListActivity,
                                     R.color.dark_gray))
                     else -> {
@@ -98,10 +102,13 @@ class ListActivity : AppCompatActivity() {
                     0 -> tab.customView?.findViewById<TextView>(R.id.bombTabTextView)
                             ?.setTextColor(ContextCompat.getColor(this@ListActivity,
                                     R.color.text_black))
-                    1 -> tab.customView?.findViewById<TextView>(R.id.normalTabTextView)
+                    1 -> tab.customView?.findViewById<TextView>(R.id.brickTabTextView)
                             ?.setTextColor(ContextCompat.getColor(this@ListActivity,
                                     R.color.text_black))
-                    2 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
+                    2 -> tab.customView?.findViewById<TextView>(R.id.galaxyTabTextView)
+                            ?.setTextColor(ContextCompat.getColor(this@ListActivity,
+                                    R.color.text_black))
+                    3 -> tab.customView?.findViewById<TextView>(R.id.roadTabTextView)
                             ?.setTextColor(ContextCompat.getColor(this@ListActivity,
                                     R.color.text_black))
                     else -> {
@@ -114,7 +121,6 @@ class ListActivity : AppCompatActivity() {
         setBluetoothProgressDialog()
 
         if (checkBluetooth(this)) bleManager.scan()
-
 
         bleManager.listener = object : BLEManagerListener {
             override fun onFindDevice(device: BluetoothDevice) {
@@ -157,47 +163,53 @@ class ListActivity : AppCompatActivity() {
         gameTabs.getTabAt(0)?.customView?.findViewById<TextView>(R.id.bombTabTextView)
                 ?.setTextColor(ContextCompat.getColor(this, R.color.text_black))
 
-        gameTabs.getTabAt(1)?.customView?.findViewById<TextView>(R.id.normalTabTextView)
+        gameTabs.getTabAt(1)?.customView?.findViewById<TextView>(R.id.brickTabTextView)
                 ?.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
 
-        gameTabs.getTabAt(2)?.customView?.findViewById<TextView>(R.id.normalTabTextView)
+        gameTabs.getTabAt(2)?.customView?.findViewById<TextView>(R.id.galaxyTabTextView)
                 ?.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
 
-        gameTabs.getTabAt(3)?.customView?.findViewById<TextView>(R.id.roadTabTextView)
+        gameTabs.getTabAt(3)?.customView?.findViewById<TextView>(R.id.brickTabTextView)
                 ?.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
     }
 
     @SuppressLint("InflateParams")
     private fun setupCustomTabs() {
 
-        val firstTab = LayoutInflater.from(this)
-                .inflate(R.layout.tab_first, null).apply {
+        val bombTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_bomb, null).apply {
                     layoutParams = (ConstraintLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT))
                     setPadding(0, 0, 0, 0)
                 }
 
-        val lastTab = LayoutInflater.from(this)
-                .inflate(R.layout.tab_last, null).apply {
+        val roadTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_road, null).apply {
                     layoutParams = (ConstraintLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT))
                     setPadding(0, 0, 0, 0)
                 }
 
-        val normalTab = LayoutInflater.from(this)
-                .inflate(R.layout.tab_normal, null).apply {
+        val brickTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_brick, null).apply {
                     layoutParams = (ConstraintLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT))
                 }
 
-        gameTabs.addTab(gameTabs.newTab().setCustomView(firstTab))
-        for (i in 0.until(gameFragments.size - 2)) {
-            gameTabs.addTab(gameTabs.newTab().setCustomView(normalTab))
-        }
-        gameTabs.addTab(gameTabs.newTab().setCustomView(lastTab))
+        val galaxyTab = LayoutInflater.from(this)
+                .inflate(R.layout.tab_galaxy, null).apply {
+                    layoutParams = (ConstraintLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT))
+                }
+
+        gameTabs.addTab(gameTabs.newTab().setCustomView(bombTab))
+        gameTabs.addTab(gameTabs.newTab().setCustomView(brickTab))
+        gameTabs.addTab(gameTabs.newTab().setCustomView(galaxyTab))
+        gameTabs.addTab(gameTabs.newTab().setCustomView(roadTab))
     }
 
     private fun dismissDialog() {
@@ -287,10 +299,6 @@ class ListActivity : AppCompatActivity() {
                 bleManager.scan()
             }
         }
-
-//        if (requestCode == NO_PERMISSION) {
-//            snackbar(exerciseSelectLayout, "권한에 동의가 필요합니다.")
-//        }
     }
 
 }

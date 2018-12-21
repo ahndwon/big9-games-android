@@ -13,10 +13,10 @@ import kr.co.big9.games.utils.ACADE_SCENE
 import kr.co.big9.games.utils.SCENE
 
 
-class SpaceFragment : Fragment() {
+class GalaxyWarsFragment : Fragment() {
 
     companion object {
-        val TAG: String = SpaceFragment::class.java.name
+        val TAG: String = GalaxyWarsFragment::class.java.name
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

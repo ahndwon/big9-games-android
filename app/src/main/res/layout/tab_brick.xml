@@ -7,7 +7,7 @@
     android:background="@drawable/bg_rect">
 
     <TextView
-        android:id="@+id/normalTabTextView"
+        android:id="@+id/brickTabTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
