@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.fragment_bomb.view.*
 import kr.co.big9.games.R
 import kr.co.big9.games.ui.UnityPlayerActivity
 import kr.co.big9.games.utils.CRT_SCENE
+import kr.co.big9.games.utils.PLAY_MODE_REQUEST_CODE
 import kr.co.big9.games.utils.POO_SCENE
 import kr.co.big9.games.utils.SCENE
 
@@ -27,7 +28,7 @@ class RoadFragment : Fragment() {
         view.startButton.setOnClickListener {
             val intent = Intent(this.context, UnityPlayerActivity::class.java)
             intent.putExtra(SCENE, CRT_SCENE)
-            view.context.startActivity(intent)
+            activity?.startActivityForResult(intent, PLAY_MODE_REQUEST_CODE)
         }
 
         return view

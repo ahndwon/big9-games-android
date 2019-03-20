@@ -22,6 +22,7 @@ const val GENDER = "GENDER"
 const val SELECTED_MEMBER = "SELECTED_MEMBER"
 
 const val EDIT_ACTIVITY = 111
+const val UNITY = 600
 const val PLAY_MODE_REQUEST_CODE = 700
 const val MEASURE_MODE_REQUEST_CODE = 800
 
